@@ -1,6 +1,6 @@
 # alfred-aadvarq
  advanced finder tag search 
-![](images/aadvarq.gif "")
+![](aadvarq.gif "")
 <a href="https://github.com/giovannicoppola/alfred-aadvarq/releases/latest/">
   
   <img alt="Downloads"
