@@ -28,9 +28,9 @@ if len(myList)>1:
     
     for ele in myList[1:]:
         if ele in ['AND','OR','NOT']:
-            myOutput = myOutput+" "+ele        
+            myOutput = myOutput + " " + ele        
         else:
-            myOutput = myOutput+" tag:"+ele        
+            myOutput = myOutput + " tag:" + ele        
         
     
     
