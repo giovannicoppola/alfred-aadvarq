@@ -19,7 +19,7 @@
 - ^ (CTRL) + enter: show complete path in large font
 
 
-#Changelog
+# Changelog
 
 - 2022-12-05: version 0.0.3 (Alfred 5)
 - 2022-06-17: version 0.0.2 (adding icon for file type, thanks @vitorgalvao!)
