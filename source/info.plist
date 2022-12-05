@@ -104,7 +104,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>qqq</string>
+				<string>{var:mainkeyword}</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -178,47 +178,100 @@ mdfind $(python3 stringCreation.py "$myQuery") | python3 aadv.py
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>https://www.alfredforum.com/topic/18041-advanced-search-using-tags-%C3%A0-la-finder/</string>
+	<string>aadvarq: Alfred ADVAnced Research Query, in response to [this](https://www.alfredforum.com/topic/18041-advanced-search-using-tags-%C3%A0-la-finder/) Alfred forum discussion
+
+More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
+
+## Usage
+- search files based on Finder tags. 
+- Boolean operators (`AND`, `OR`, `NOT`) accepted
+- shorten the file path (helpful when very long and the actual file name is not visible. Set the max length in `Configure Workflow`
+
+## Actions
+
+- enter: open file
+- ⌘ (CMD) + enter: show file in Finder
+- ^ (CTRL) + enter: show complete path in large font</string>
 	<key>uidata</key>
 	<dict>
 		<key>11A07EFC-DB7E-45F8-83AD-61BD3092A9D0</key>
 		<dict>
 			<key>xpos</key>
-			<integer>450</integer>
+			<real>455</real>
 			<key>ypos</key>
-			<integer>790</integer>
+			<real>790</real>
 		</dict>
 		<key>3DC43C67-06CF-4CD5-8B04-246905F0A71B</key>
 		<dict>
 			<key>xpos</key>
-			<integer>200</integer>
+			<real>200</real>
 			<key>ypos</key>
-			<integer>535</integer>
+			<real>535</real>
 		</dict>
 		<key>AE1CB671-374A-47DF-9A1A-C33375E221F2</key>
 		<dict>
 			<key>xpos</key>
-			<integer>450</integer>
+			<real>450</real>
 			<key>ypos</key>
-			<integer>535</integer>
+			<real>535</real>
 		</dict>
 		<key>E86D11FF-943C-42FC-89B4-47B3499A9EB2</key>
 		<dict>
 			<key>xpos</key>
-			<integer>450</integer>
+			<real>450</real>
 			<key>ypos</key>
-			<integer>310</integer>
+			<real>310</real>
 		</dict>
 	</dict>
-	<key>variables</key>
-	<dict>
-		<key>MAXLENGTH</key>
-		<string>100</string>
-	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>100</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Max file path length</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>MAXLENGTH</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>qqq</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>mainkeyword</string>
+		</dict>
+	</array>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>0.0.2</string>
+	<string>0.0.3</string>
 	<key>webaddress</key>
 	<string>https://github.com/giovannicoppola/alfred-aadvarq</string>
 </dict>
