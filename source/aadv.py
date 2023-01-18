@@ -6,6 +6,7 @@
 import sys
 import json
 import os
+import subprocess
 
 MAXLENGTH = os.path.expanduser(os.getenv('MAXLENGTH', '0'))
 
@@ -16,7 +17,27 @@ def log(s, *args):
 
 myLog = "".join([i for i in sys.stdin])
 
+log (myLog)
+
 myTotal = len(myLog.split('\n')) - 1
+
+
+COLORS = {'Gray': '⚪', 'Green': '🟢', 'Purple': '🟣', 
+          'Blue': '🔵', 'Yellow': '🟡', 'Red': '🔴', 'Orange': '🟠'}
+
+
+
+def finder_tags(file_path):
+    """Extract Finder tags of a given file in macOS"""
+    output = subprocess.check_output(["mdls", "-name", "kMDItemUserTags", file_path]).strip()
+    output = output.decode()
+    tags = output.split("(")[1].split(")")[0].split(",")
+    return [tag.strip() for tag in tags]
+
+
+
+
+
 
 
 result = {"items": []}
@@ -27,13 +48,26 @@ def main ():
     myCount = 0
     for T in myLog.splitlines():
         fullT = T
+        log (T)
+
+
+        tagString = ''
+        tags = finder_tags(T)
+        if (tags):
+            
+            for myTag in tags:
+                if myTag in COLORS:
+                    tagString = tagString + COLORS[myTag]
+        
+
+
         lenT = len (T)
         if lenT > int(MAXLENGTH):
             T = T[1:50] + " ... " + T[80:len(T)]
         myCount += 1
         fileName= os.path.basename(T)
         result["items"].append({
-                    "title": fileName,
+                    "title": f"{fileName} {tagString}",
                     "subtitle": str(myCount) + "/" + str(myTotal) + "-" + T,
                     "type": "file",
                     "icon": {"path": fullT, "type": "fileicon"},

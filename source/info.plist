@@ -41,6 +41,8 @@
 				<true/>
 			</dict>
 		</array>
+		<key>5A2EE8CD-66BC-4A7D-9F7D-42C7A1C4300E</key>
+		<array/>
 	</dict>
 	<key>createdby</key>
 	<string>giovanni</string>
@@ -150,6 +152,59 @@ mdfind $(python3 stringCreation.py "$myQuery") | python3 aadv.py
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>qq1</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string>export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
+myQuery="$1"
+
+mdfind "kMDItemFSName == '*sandbox*'" -onlyin ~/ | python3 aadv.py
+</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>aadvarq</string>
+				<key>type</key>
+				<integer>5</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>5A2EE8CD-66BC-4A7D-9F7D-42C7A1C4300E</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alignment</key>
 				<integer>0</integer>
 				<key>backgroundcolor</key>
@@ -208,6 +263,13 @@ More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
 			<key>ypos</key>
 			<real>535</real>
 		</dict>
+		<key>5A2EE8CD-66BC-4A7D-9F7D-42C7A1C4300E</key>
+		<dict>
+			<key>xpos</key>
+			<real>730</real>
+			<key>ypos</key>
+			<real>535</real>
+		</dict>
 		<key>AE1CB671-374A-47DF-9A1A-C33375E221F2</key>
 		<dict>
 			<key>xpos</key>
@@ -259,17 +321,15 @@ More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
 				<true/>
 			</dict>
 			<key>description</key>
-			<string></string>
+			<string>(search by Tag)</string>
 			<key>label</key>
-			<string>Keyword</string>
+			<string>Tag Keyword</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
 			<string>mainkeyword</string>
 		</dict>
 	</array>
-	<key>variablesdontexport</key>
-	<array/>
 	<key>version</key>
 	<string>0.0.3</string>
 	<key>webaddress</key>
