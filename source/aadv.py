@@ -16,11 +16,12 @@ def log(s, *args):
         s = s % args
     print(s, file=sys.stderr)
 
-myLog = "".join([i for i in sys.stdin])
+myLog = "".join([i for i in sys.argv[1]])
 myTotal = len(myLog.split('\n')) - 1
 
 COLORS = {'Gray': '⚪', 'Green': '🟢', 'Purple': '🟣', 
           'Blue': '🔵', 'Yellow': '🟡', 'Red': '🔴', 'Orange': '🟠'}
+
 
 
 
@@ -46,7 +47,11 @@ def main ():
         if (SHOWLABELS == "1"):
         
         
-            tags = finder_tags(T)
+            #tags = finder_tags(T)
+            tags = [sys.argv[2]]
+            log (f"TAAAAAAGS: {tags}")
+            log (type(tags))
+
             if (tags):
                 
                 for myTag in tags:

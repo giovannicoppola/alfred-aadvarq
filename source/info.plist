@@ -204,7 +204,19 @@ myQuery="$1"
 
 if [[ ${#myQuery} -gt 3 ]]
 then
-	mdfind "kMDItemFSName == '*$myQuery*'" -onlyin ~/ | python3 aadv.py
+	myFiles=$(mdfind "kMDItemFSName == '*$myQuery*'" -onlyin ~/) 
+	# Define an empty array to store the results
+	metadata_array=()
+
+	for file_path in "${myFiles[@]}"
+	do
+	  # Use mdls to retrieve the metadata of the file
+	  metadata=$(mdls -name kMDItemUserTags "$file_path")
+	  # Append the metadata to the array
+	  metadata_array+=("$metadata")
+	done
+	python3 aadv.py $myFiles $metadata_array
+
 else
 cat &lt;&lt; EOB
 	{"items": [
