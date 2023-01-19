@@ -21,24 +21,30 @@ myList=myString.split()
 #log (len(myList))
 
 myFirst = myList[0]
-myOutput = 'tag:'+myFirst
+myOutput = f'kMDItemUserTags == "{myFirst}"'
 
 if len(myList)>1:
  
     
     for ele in myList[1:]:
-        if ele in ['AND','OR','NOT']:
-            myOutput = myOutput + " " + ele        
-        else:
-            myOutput = myOutput + " tag:" + ele        
+        if ele.strip() == 'AND':
+            myOutput = f"{myOutput} &&"
+        elif ele.strip() == 'OR':
+            myOutput = f"{myOutput} ||"
+        elif ele.strip() == 'NOT':
+            myOutput = f"{myOutput} && !"
         
+        else:
+            myOutput = myOutput + " kMDItemUserTags ==" + ele        
+        
+
     
     
     
 
 
 
-#log (myOutput)
+log (myOutput)
 
 
 print (myOutput)
