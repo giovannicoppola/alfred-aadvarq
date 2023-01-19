@@ -21,6 +21,7 @@
 
 # Changelog
 
+- 2023-01-19: version 0.0.4: added option to visualize color tags (in response to [this thread](https://www.alfredforum.com/topic/19532-colour-tag-in-search-results/)), added general search. 
 - 2022-12-05: version 0.0.3 (Alfred 5)
 - 2022-06-17: version 0.0.2 (adding icon for file type, thanks @vitorgalvao!)
 - 2022-03-05: version 0.0.1 

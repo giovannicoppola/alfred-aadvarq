@@ -8,7 +8,8 @@ import json
 import os
 import subprocess
 
-MAXLENGTH = os.path.expanduser(os.getenv('MAXLENGTH', '0'))
+MAXLENGTH = os.getenv('MAXLENGTH', '0')
+SHOWLABELS = os.getenv('showLabelColors')
 
 def log(s, *args):
     if args:
@@ -16,11 +17,7 @@ def log(s, *args):
     print(s, file=sys.stderr)
 
 myLog = "".join([i for i in sys.stdin])
-
-log (myLog)
-
 myTotal = len(myLog.split('\n')) - 1
-
 
 COLORS = {'Gray': '⚪', 'Green': '🟢', 'Purple': '🟣', 
           'Blue': '🔵', 'Yellow': '🟡', 'Red': '🔴', 'Orange': '🟠'}
@@ -35,11 +32,6 @@ def finder_tags(file_path):
     return [tag.strip() for tag in tags]
 
 
-
-
-
-
-
 result = {"items": []}
 
 #log (myOut)
@@ -49,18 +41,18 @@ def main ():
     for T in myLog.splitlines():
         fullT = T
         log (T)
-
-
+    
         tagString = ''
-        tags = finder_tags(T)
-        if (tags):
-            
-            for myTag in tags:
-                if myTag in COLORS:
-                    tagString = tagString + COLORS[myTag]
+        if (SHOWLABELS == "1"):
         
-
-
+        
+            tags = finder_tags(T)
+            if (tags):
+                
+                for myTag in tags:
+                    if myTag in COLORS:
+                        tagString = tagString + COLORS[myTag]
+    
         lenT = len (T)
         if lenT > int(MAXLENGTH):
             T = T[1:50] + " ... " + T[80:len(T)]

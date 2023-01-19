@@ -42,7 +42,28 @@
 			</dict>
 		</array>
 		<key>5A2EE8CD-66BC-4A7D-9F7D-42C7A1C4300E</key>
-		<array/>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E86D11FF-943C-42FC-89B4-47B3499A9EB2</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>11A07EFC-DB7E-45F8-83AD-61BD3092A9D0</string>
+				<key>modifiers</key>
+				<integer>262144</integer>
+				<key>modifiersubtext</key>
+				<string>Show complete path</string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>giovanni</string>
@@ -165,7 +186,7 @@ mdfind $(python3 stringCreation.py "$myQuery") | python3 aadv.py
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>qq1</string>
+				<string>{var:searchkeyword}</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -175,12 +196,27 @@ mdfind $(python3 stringCreation.py "$myQuery") | python3 aadv.py
 				<key>queuemode</key>
 				<integer>1</integer>
 				<key>runningsubtext</key>
-				<string></string>
+				<string>pleease wait until I run an inefficient script ... ⏳</string>
 				<key>script</key>
 				<string>export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
 myQuery="$1"
 
-mdfind "kMDItemFSName == '*sandbox*'" -onlyin ~/ | python3 aadv.py
+
+if [[ ${#myQuery} -gt 3 ]]
+then
+	mdfind "kMDItemFSName == '*$myQuery*'" -onlyin ~/ | python3 aadv.py
+else
+cat &lt;&lt; EOB
+	{"items": [
+		{
+			"title": "❗Enter 4 characters at least",
+			"subtitle": "length: ${#myQuery} (${myQuery})"
+
+			}
+]}
+EOB
+fi
+
 </string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
@@ -189,7 +225,7 @@ mdfind "kMDItemFSName == '*sandbox*'" -onlyin ~/ | python3 aadv.py
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
-				<string>aadvarq</string>
+				<string>search using aadvarq</string>
 				<key>type</key>
 				<integer>5</integer>
 				<key>withspace</key>
@@ -329,9 +365,51 @@ More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
 			<key>variable</key>
 			<string>mainkeyword</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+			</dict>
+			<key>description</key>
+			<string>(slower)</string>
+			<key>label</key>
+			<string>Show Label Colors</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>showLabelColors</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>zzz</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Search Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>searchkeyword</string>
+		</dict>
 	</array>
+	<key>variablesdontexport</key>
+	<array/>
 	<key>version</key>
-	<string>0.0.3</string>
+	<string>0.0.4</string>
 	<key>webaddress</key>
 	<string>https://github.com/giovannicoppola/alfred-aadvarq</string>
 </dict>
