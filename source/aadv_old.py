@@ -211,7 +211,7 @@ fi
 CLEANED UP
 export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
 myQuery="$1"
-myTS=$(date +%s)
+
 
 if [[ ${#myQuery} -gt 3 ]]
 then
