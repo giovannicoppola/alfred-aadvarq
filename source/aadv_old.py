@@ -7,6 +7,9 @@ import sys
 import json
 import os
 import subprocess
+import time
+ 
+
 
 MAXLENGTH = os.getenv('MAXLENGTH', '0')
 SHOWLABELS = os.getenv('showLabelColors')
@@ -16,11 +19,12 @@ def log(s, *args):
         s = s % args
     print(s, file=sys.stderr)
 
-myLog = "".join([i for i in sys.stdin])
+myLog = "".join([i for i in sys.argv[1]])
 myTotal = len(myLog.split('\n')) - 1
 
 COLORS = {'Gray': '⚪', 'Green': '🟢', 'Purple': '🟣', 
           'Blue': '🔵', 'Yellow': '🟡', 'Red': '🔴', 'Orange': '🟠'}
+
 
 
 
@@ -40,13 +44,17 @@ def main ():
     myCount = 0
     for T in myLog.splitlines():
         fullT = T
-        log (T)
+        #log (T)
     
         tagString = ''
         if (SHOWLABELS == "1"):
         
         
-            tags = finder_tags(T)
+            #tags = finder_tags(T)
+            tags = [sys.argv[2]]
+            #log (f"TAAAAAAGS: {tags}")
+            #log (type(tags))
+
             if (tags):
                 
                 for myTag in tags:
@@ -67,8 +75,76 @@ def main ():
                             
                     "arg":fullT})
                 
-
+    startTS = [sys.argv[3]][0]
+    
+    tts = time.time()
+    finalTime = tts - int(startTS)
+    log (f"================================Timestamp end of script (in sec): {finalTime:.2}")
     print (json.dumps(result))
-
+    
+    
 if __name__ == "__main__":
     main()
+
+
+
+"""
+SECOND VERSION
+export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
+myQuery="$1"
+myTS=$(date +%s)
+#>&2 echo $myTS
+
+if [[ ${#myQuery} -gt 3 ]]
+then
+	myFiles=$(mdfind "kMDItemFSName == '*$myQuery*'" -onlyin ~/) 
+	# Define an empty array to store the results
+	metadata_array=()
+
+	for file_path in "${myFiles[@]}"
+	do
+	  # Use mdls to retrieve the metadata of the file
+	  metadata=$(mdls -name kMDItemUserTags "$file_path")
+	  # Append the metadata to the array
+	  metadata_array+=("$metadata")
+	done
+	python3 aadv.py "$myFiles" "$metadata_array" "$myTS"
+
+else
+cat << EOB
+	{"items": [
+		{
+			"title": "❗Enter 4 characters at least",
+			"subtitle": "length: ${#myQuery} (${myQuery})"
+
+			}
+]}
+EOB
+fi
+
+
+### RELEASED VERSION
+export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
+myQuery="$1"
+
+
+if [[ ${#myQuery} -gt 3 ]]
+then
+	mdfind "kMDItemFSName == '*$myQuery*'" -onlyin ~/ | python3 aadv.py
+else
+cat << EOB
+	{"items": [
+		{
+			"title": "❗Enter 4 characters at least",
+			"subtitle": "length: ${#myQuery} (${myQuery})"
+
+			}
+]}
+EOB
+fi
+
+
+
+
+
+"""

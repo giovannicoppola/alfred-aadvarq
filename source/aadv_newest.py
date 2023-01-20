@@ -16,11 +16,16 @@ def log(s, *args):
         s = s % args
     print(s, file=sys.stderr)
 
-myLog = "".join([i for i in sys.stdin])
+log ("STARTING SCRIPT")
+
+myLog = "".join([i for i in sys.argv[1]])
+file_list = sys.argv[1].splitlines()
+log (f"file list: {file_list}")
 myTotal = len(myLog.split('\n')) - 1
 
 COLORS = {'Gray': '⚪', 'Green': '🟢', 'Purple': '🟣', 
           'Blue': '🔵', 'Yellow': '🟡', 'Red': '🔴', 'Orange': '🟠'}
+
 
 
 
@@ -38,7 +43,8 @@ result = {"items": []}
 
 def main ():
     myCount = 0
-    for T in myLog.splitlines():
+    for T in file_list:
+    #for T in myLog.splitlines():
         fullT = T
         log (T)
     
@@ -46,7 +52,11 @@ def main ():
         if (SHOWLABELS == "1"):
         
         
-            tags = finder_tags(T)
+            #tags = finder_tags(T)
+            tags = [sys.argv[2]]
+            log (f"TAAAAAAGS: {tags}")
+            log (type(tags))
+
             if (tags):
                 
                 for myTag in tags:
