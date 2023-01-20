@@ -405,10 +405,8 @@ More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
 			<string>searchkeyword</string>
 		</dict>
 	</array>
-	<key>variablesdontexport</key>
-	<array/>
 	<key>version</key>
-	<string>0.0.5</string>
+	<string>0.0.6</string>
 	<key>webaddress</key>
 	<string>https://github.com/giovannicoppola/alfred-aadvarq</string>
 </dict>
