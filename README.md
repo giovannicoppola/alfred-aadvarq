@@ -10,7 +10,9 @@
 # Usage
 - search files based on Finder tags (case sensitive). 
 - Boolean operators (`AND`, `OR`, `NOT`, case sensitive) accepted
-- shorten the file path (helpful when very long and the actual file name is not visible. Set the max length in `Configure Workflow`
+- shorten the file path (helpful when very long and the actual file name is not visible). Set the max length in `Configure Workflow`
+- general search (4-character min queries) with color-coded results based on Finder tags. May be slow for queries with many (>50) results.  
+
 
 ## Actions
 

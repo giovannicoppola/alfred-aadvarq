@@ -7,6 +7,7 @@ import sys
 import json
 import os
 import subprocess
+#import time
 
 MAXLENGTH = os.getenv('MAXLENGTH', '0')
 SHOWLABELS = os.getenv('showLabelColors')
@@ -19,8 +20,10 @@ def log(s, *args):
 myLog = "".join([i for i in sys.stdin])
 myTotal = len(myLog.split('\n')) - 1
 
+
 COLORS = {'Gray': '⚪', 'Green': '🟢', 'Purple': '🟣', 
           'Blue': '🔵', 'Yellow': '🟡', 'Red': '🔴', 'Orange': '🟠'}
+
 
 
 
@@ -38,6 +41,7 @@ result = {"items": []}
 
 def main ():
     myCount = 0
+    
     for T in myLog.splitlines():
         fullT = T
         log (T)
@@ -47,6 +51,10 @@ def main ():
         
         
             tags = finder_tags(T)
+            #tags = [sys.argv[2]]
+            
+            log (type(tags))
+
             if (tags):
                 
                 for myTag in tags:
@@ -67,7 +75,12 @@ def main ():
                             
                     "arg":fullT})
                 
-
+    #startTS = sys.argv[3]
+    
+    #tts = time.time()
+    #finalTime = tts - int(startTS)
+    #log (f"================================Timestamp end of script (in sec): {finalTime:.2}")
+    
     print (json.dumps(result))
 
 if __name__ == "__main__":
