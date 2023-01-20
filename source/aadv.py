@@ -16,7 +16,11 @@ def log(s, *args):
         s = s % args
     print(s, file=sys.stderr)
 
+log ("STARTING SCRIPT")
+
 myLog = "".join([i for i in sys.argv[1]])
+file_list = sys.argv[1].splitlines()
+log (f"file list: {file_list}")
 myTotal = len(myLog.split('\n')) - 1
 
 COLORS = {'Gray': '⚪', 'Green': '🟢', 'Purple': '🟣', 
@@ -39,7 +43,8 @@ result = {"items": []}
 
 def main ():
     myCount = 0
-    for T in myLog.splitlines():
+    for T in file_list:
+    #for T in myLog.splitlines():
         fullT = T
         log (T)
     

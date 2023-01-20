@@ -204,18 +204,35 @@ myQuery="$1"
 
 if [[ ${#myQuery} -gt 3 ]]
 then
-	myFiles=$(mdfind "kMDItemFSName == '*$myQuery*'" -onlyin ~/) 
-	# Define an empty array to store the results
-	metadata_array=()
+	if [[ ${#myQuery} -gt 3 ]]
+then
+	# Use the -0 option to separate file names with a null character
+    IFS=$'\n'
+    while read -r -d '' file; do
+    # Append the file name to the array
+    files+=("$file")
+    done &lt; &lt;(mdfind "kMDItemDisplayName == '*$myQuery*'c" -0 -onlyin ~/)
 
-	for file_path in "${myFiles[@]}"
+
+	for file_path in "${files[@]}"
+    
 	do
-	  # Use mdls to retrieve the metadata of the file
-	  metadata=$(mdls -name kMDItemUserTags "$file_path")
-	  # Append the metadata to the array
-	  metadata_array+=("$metadata")
+	  #echo "Current path: $file_path"
+      # Use mdls to retrieve the metadata of the file
+	  tags=$(mdls -name kMDItemUserTags "$file_path")
+      #echo "current tags before parsing: $tags"
+      tags=$(mdls -name kMDItemUserTags "$file_path" | sed 's/kMDItemUserTags = (//g' | sed 's/)//g' | tr -d ' ' | tr -d '\n')
+      #echo "parsed tags: $tags"
+        
+      # Append the tags to the array
+      tags_array+=("$tags")
 	done
-	python3 aadv.py $myFiles $metadata_array
+
+    #printf '%s\n' "${tags_array[@]}"
+fi
+
+
+	python3 aadv.py "$files" "$tags_array"
 
 else
 cat &lt;&lt; EOB
