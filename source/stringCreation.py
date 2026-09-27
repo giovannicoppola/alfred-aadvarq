@@ -1,12 +1,12 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
 
 ## STRING CREATION
 # giovanni
-# Saturday, March 5, 2022, 8:46 AM
-# Sunny ☀️   🌡️+30°F (feels +29°F, 51%) 🌬️↙4mph 🌒
-
+# Build an mdfind metadata query from the typed tag expression.
+# AND / OR / NOT (uppercase) are operators; everything else is a tag name.
 
 import sys
+
 
 def log(s, *args):
     if args:
@@ -14,37 +14,50 @@ def log(s, *args):
     print(s, file=sys.stderr)
 
 
-myString =sys.argv[1]
+def comparison(tag):
+    # double quotes would terminate the query string: strip them
+    tag = tag.replace('"', '')
+    return f'kMDItemUserTags == "{tag}"'
 
-myList=myString.split()
 
-#log (len(myList))
-
-myFirst = myList[0]
-myOutput = f'kMDItemUserTags == "{myFirst}"'
-
-if len(myList)>1:
- 
-    
-    for ele in myList[1:]:
-        if ele.strip() == 'AND':
-            myOutput = f"{myOutput} &&"
-        elif ele.strip() == 'OR':
-            myOutput = f"{myOutput} ||"
-        elif ele.strip() == 'NOT':
-            myOutput = f"{myOutput} && !"
-        
+def build_query(words):
+    parts = []
+    last_was_comparison = False
+    for word in words:
+        if word == 'AND':
+            if last_was_comparison:
+                parts.append('&&')
+                last_was_comparison = False
+        elif word == 'OR':
+            if last_was_comparison:
+                parts.append('||')
+                last_was_comparison = False
+        elif word == 'NOT':
+            # a leading NOT would match nearly every file on the disk
+            if not parts:
+                return ""
+            if last_was_comparison:
+                parts.append('&&')
+            parts.append('!')
+            last_was_comparison = False
         else:
-            myOutput = myOutput + " kMDItemUserTags ==" + ele        
-        
+            # two tags in a row imply AND
+            if last_was_comparison:
+                parts.append('&&')
+            parts.append(comparison(word))
+            last_was_comparison = True
+    # drop a trailing operator ("red AND" while still typing)
+    while parts and parts[-1] in ('&&', '||', '!'):
+        parts.pop()
+    return " ".join(parts)
 
-    
-    
-    
+
+def main():
+    myString = sys.argv[1] if len(sys.argv) > 1 else ""
+    myOutput = build_query(myString.split())
+    log(myOutput)
+    print(myOutput)
 
 
-
-log (myOutput)
-
-
-print (myOutput)
+if __name__ == "__main__":
+    main()

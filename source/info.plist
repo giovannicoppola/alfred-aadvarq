@@ -140,15 +140,12 @@
 				<string></string>
 				<key>script</key>
 				<string>export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
-myQuery="$1"
-mdfind $(python3 stringCreation.py "$myQuery") | python3 aadv.py
-
-
-
-
-
-
-
+QUERY=$(python3 stringCreation.py "$1")
+if [ -n "$QUERY" ]; then
+	mdfind "$QUERY" | python3 aadv.py
+else
+	echo '{"items":[{"title":"Type a tag to search","valid":false}]}'
+fi
 </string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
@@ -200,7 +197,8 @@ mdfind $(python3 stringCreation.py "$myQuery") | python3 aadv.py
 				<key>script</key>
 				<string>export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
 myQuery="$1"
-
+# quotes and backslashes would break out of the mdfind query expression
+myQuery=${myQuery//[\\\&quot;\']/}
 
 if [[ ${#myQuery} -gt 3 ]]
 then
@@ -210,12 +208,13 @@ cat &lt;&lt; EOB
 	{"items": [
 		{
 			"title": "❗Enter 4 characters at least",
-			"subtitle": "length: ${#myQuery} (${myQuery})"
-
+			"subtitle": "length: ${#myQuery} (${myQuery})",
+			"valid": false
 			}
 ]}
 EOB
 fi
+
 </string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
@@ -273,9 +272,10 @@ fi
 More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
 
 ## Usage
-- search files based on Finder tags. 
-- Boolean operators (`AND`, `OR`, `NOT`) accepted
-- shorten the file path (helpful when very long and the actual file name is not visible. Set the max length in `Configure Workflow`
+- search files based on Finder tags (case sensitive). 
+- Boolean operators (`AND`, `OR`, `NOT`, case sensitive) accepted
+- shorten the file path (helpful when very long and the actual file name is not visible). Set the max length in `Configure Workflow`
+- general search (4-character min queries) with color-coded results based on Finder tags. May be slow for queries with many (&gt;50) results.  
 
 ## Actions
 
@@ -326,27 +326,6 @@ More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>100</string>
-				<key>placeholder</key>
-				<string></string>
-				<key>required</key>
-				<false/>
-				<key>trim</key>
-				<true/>
-			</dict>
-			<key>description</key>
-			<string></string>
-			<key>label</key>
-			<string>Max file path length</string>
-			<key>type</key>
-			<string>textfield</string>
-			<key>variable</key>
-			<string>MAXLENGTH</string>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>default</key>
 				<string>qqq</string>
 				<key>placeholder</key>
 				<string></string>
@@ -356,13 +335,34 @@ More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>(search by Tag)</string>
+			<string>search by Tag</string>
 			<key>label</key>
 			<string>Tag Keyword</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
 			<string>mainkeyword</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>zzz</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>general search, 4+ characters</string>
+			<key>label</key>
+			<string>Search Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>searchkeyword</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -387,7 +387,7 @@ More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>zzz</string>
+				<string>100</string>
 				<key>placeholder</key>
 				<string></string>
 				<key>required</key>
@@ -398,15 +398,17 @@ More info [here](https://github.com/giovannicoppola/alfred-aadvarq)
 			<key>description</key>
 			<string></string>
 			<key>label</key>
-			<string>Search Keyword</string>
+			<string>Max file path length</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>searchkeyword</string>
+			<string>MAXLENGTH</string>
 		</dict>
 	</array>
+	<key>variablesdontexport</key>
+	<array/>
 	<key>version</key>
-	<string>0.0.6</string>
+	<string>0.0.7</string>
 	<key>webaddress</key>
 	<string>https://github.com/giovannicoppola/alfred-aadvarq</string>
 </dict>

@@ -1,87 +1,116 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
 # giovanni
-# Saturday, March 5, 2022, 8:46 AM
-# Sunny ☀️   🌡️+30°F (feels +29°F, 51%) 🌬️↙4mph 🌒
+# Format a list of file paths (one per line on stdin) as Alfred items,
+# optionally decorated with Finder label colors.
 
 import sys
 import json
 import os
 import subprocess
-#import time
 
-MAXLENGTH = os.getenv('MAXLENGTH', '0')
 SHOWLABELS = os.getenv('showLabelColors')
+
+COLORS = {'Gray': '⚪', 'Green': '🟢', 'Purple': '🟣',
+          'Blue': '🔵', 'Yellow': '🟡', 'Red': '🔴', 'Orange': '🟠'}
+
 
 def log(s, *args):
     if args:
         s = s % args
     print(s, file=sys.stderr)
 
-myLog = "".join([i for i in sys.stdin])
-myTotal = len(myLog.split('\n')) - 1
+
+def get_max_length():
+    raw = os.getenv('MAXLENGTH', '').strip()
+    try:
+        return int(raw)
+    except ValueError:
+        return 100
 
 
-COLORS = {'Gray': '⚪', 'Green': '🟢', 'Purple': '🟣', 
-          'Blue': '🔵', 'Yellow': '🟡', 'Red': '🔴', 'Orange': '🟠'}
+def parse_tag_block(block):
+    """Parse one `kMDItemUserTags = (...)` mdls block into a list of tag names."""
+    if "(" not in block:
+        return []
+    inner = block.split("(", 1)[1].rsplit(")", 1)[0]
+    if inner.strip() in ("", "null"):
+        return []
+    return [t.strip().strip('"') for t in inner.split(",") if t.strip()]
 
 
+def finder_tags_batch(paths, chunk_size=200):
+    """Finder tags for many files with one mdls call per chunk instead of
+    one per file. Returns a list of tag lists aligned with paths."""
+    all_tags = []
+    for start in range(0, len(paths), chunk_size):
+        chunk = paths[start:start + chunk_size]
+        try:
+            output = subprocess.run(
+                ["mdls", "-name", "kMDItemUserTags"] + chunk,
+                capture_output=True, text=True,
+            ).stdout
+        except OSError as e:
+            log("mdls failed: %s", e)
+            all_tags.extend([[]] * len(chunk))
+            continue
+
+        # one block per file, in argument order
+        blocks = output.split("kMDItemUserTags")[1:]
+        if len(blocks) == len(chunk):
+            all_tags.extend(parse_tag_block(b) for b in blocks)
+        else:
+            # a missing/unreadable file breaks alignment: fall back per file
+            for p in chunk:
+                single = subprocess.run(
+                    ["mdls", "-name", "kMDItemUserTags", p],
+                    capture_output=True, text=True,
+                ).stdout
+                all_tags.append(parse_tag_block(single))
+    return all_tags
 
 
-def finder_tags(file_path):
-    """Extract Finder tags of a given file in macOS"""
-    output = subprocess.check_output(["mdls", "-name", "kMDItemUserTags", file_path]).strip()
-    output = output.decode()
-    tags = output.split("(")[1].split(")")[0].split(",")
-    return [tag.strip() for tag in tags]
+def shorten(path, max_length):
+    if max_length <= 0 or len(path) <= max_length:
+        return path
+    half = max(max_length // 2, 10)
+    return path[:half] + " … " + path[-half:]
 
 
-result = {"items": []}
+def main():
+    paths = [line for line in sys.stdin.read().splitlines() if line.strip()]
+    max_length = get_max_length()
 
-#log (myOut)
+    result = {"items": []}
 
-def main ():
-    myCount = 0
-    
-    for T in myLog.splitlines():
-        fullT = T
-        log (T)
-    
+    tags_per_path = None
+    if SHOWLABELS == "1":
+        tags_per_path = finder_tags_batch(paths)
+
+    total = len(paths)
+    for idx, path in enumerate(paths):
         tagString = ''
-        if (SHOWLABELS == "1"):
-        
-        
-            tags = finder_tags(T)
-            #tags = [sys.argv[2]]
-            
-            log (type(tags))
+        if tags_per_path:
+            tagString = "".join(COLORS[t] for t in tags_per_path[idx] if t in COLORS)
 
-            if (tags):
-                
-                for myTag in tags:
-                    if myTag in COLORS:
-                        tagString = tagString + COLORS[myTag]
-    
-        lenT = len (T)
-        if lenT > int(MAXLENGTH):
-            T = T[1:50] + " ... " + T[80:len(T)]
-        myCount += 1
-        fileName= os.path.basename(T)
+        fileName = os.path.basename(path)
         result["items"].append({
-                    "title": f"{fileName} {tagString}",
-                    "subtitle": str(myCount) + "/" + str(myTotal) + "-" + T,
-                    "type": "file",
-                    "icon": {"path": fullT, "type": "fileicon"},
-                    "valid":'TRUE',
-                            
-                    "arg":fullT})
-                
-    #startTS = sys.argv[3]
-    
-    #tts = time.time()
-    #finalTime = tts - int(startTS)
-    #log (f"================================Timestamp end of script (in sec): {finalTime:.2}")
-    
-    print (json.dumps(result))
+            "title": f"{fileName} {tagString}".rstrip(),
+            "subtitle": f"{idx + 1}/{total}-{shorten(path, max_length)}",
+            "type": "file",
+            "icon": {"path": path, "type": "fileicon"},
+            "valid": True,
+            "arg": path,
+        })
+
+    if not result["items"]:
+        result["items"].append({
+            "title": "No matches",
+            "subtitle": "Try a different query",
+            "valid": False,
+        })
+
+    print(json.dumps(result))
+
 
 if __name__ == "__main__":
     main()
